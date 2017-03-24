@@ -1,0 +1,44 @@
+#!/usr/bin/env python
+
+from sys import argv, exit
+
+"""
+Convert paired end sequencing reads to an interleaved format
+accepted by metabin. The script uses a low memory approach
+to convert the fastq files.
+"""
+
+def get_sequence(fileobj):
+    label = fileobj.readline().strip()
+    seq = fileobj.readline().strip()
+    plusLine = fileobj.readline().strip()
+    quality = fileobj.readline().strip()
+
+    return seq 
+
+def parse_fastq(fileA, fileB):
+    with open(fileA) as a, open(fileB) as b:
+        count = 1
+        while(True):
+            seqA = get_sequence(a)
+            seqB = get_sequence(b)
+
+            if seqA == "" or seqB == "":
+                break
+            
+            print(">Seq{}_Annot_1\n{}".format(
+                    str(count), seqA))
+
+            print(">Seq{}_Annot_2\n{}".format(
+                    str(count), seqB))
+            count += 1   
+
+if __name__ == "__main__":
+    if len(argv) != 3:
+        print("Usage: fastqToMetabin <fastq_1> <fastq_2>")
+        exit(1)
+
+    parse_fastq(argv[1], argv[2])
+
+
+
