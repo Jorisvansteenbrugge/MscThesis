@@ -7,7 +7,6 @@ __author__ = "Joris van Steenbrugge"
 
 import os
 import subprocess as sp
-import fileinput
 from sys import stderr
 from glob import glob
 
@@ -55,7 +54,7 @@ def downloadtmp(url, name):
                     shell=True, stderr=sp.STDOUT)
 
         elif os.path.exists("Makefile") or os.path.exists("makefile"):
-            paiss #not implemented
+            pass #not implemented
         else:
             sp.call("mv * {}".format(wd+name),
                     shell=True)
