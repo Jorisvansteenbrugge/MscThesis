@@ -53,8 +53,8 @@ def downloadtmp(url, name):
             sp.check_output("make  && make install ", 
                     shell=True, stderr=sp.STDOUT)
 
-        elif os.path.exists("Makefile") or os.path.exists("makefile"):
-            pass #not implemented
+       # elif os.path.exists("Makefile") or os.path.exists("makefile"):
+        #    pass #not implemented
         else:
             sp.call("mv * {}".format(wd+name),
                     shell=True)
