@@ -13,20 +13,19 @@ from glob import glob
 
 
 
-def parseConfig(path):   
+def parseConfig(path):
+    """Replace the default ac prefix into the custom installation directory
+    """
     path = path.replace("/","\/")
     sp.call("sed -i 's/ac_default_prefix=\/usr\/local/ac_default_prefix={}/g' configure".format(
-                    path), 
-                shell = True)
+                    path), shell = True)
 
 def checkOutfolder(path):
     content = glob(path+"/*")
     for c in content:
         if "bin" in c:
-            sp.call("mv {} {}".format(path+"/bin/*", path), 
-                        shell = True)
-            sp.call("rm -r {}".format(path+"/bin"),
-                        shell = True)
+            sp.call("mv {} {}".format(path+"/bin/*", path), shell = True)
+            sp.call("rm -r {}".format(path+"/bin"), shell = True)
 
 def downloadtmp(url, name):
     os.chdir("/tmp")
@@ -55,6 +54,14 @@ def downloadtmp(url, name):
 
        # elif os.path.exists("Makefile") or os.path.exists("makefile"):
         #    pass #not implemented
+        elif os.path.exists("setup.py"):
+            sp.call("pip install ../prog.tar.gz",
+                        stderr=sp.STDOUT, shell=True)
+            print("{} is a python package, output directory {} is not required and will be removed".format(
+                        name, wd+name),
+                    file=stderr)
+            sp.call("rm -r {}".format(wd+name),
+                        shell=True)
         else:
             sp.call("mv * {}".format(wd+name),
                     shell=True)
@@ -65,6 +72,7 @@ def downloadtmp(url, name):
     sp.call("rm /tmp/progtar -r", shell=True)    
 
 def setup(tools):
+    global wd
     wd = os.getcwd()+"/tools/"
 
     print("Creating tools path: {}".format(wd), file=stderr)
@@ -88,9 +96,11 @@ def setup(tools):
 
 if __name__ == "__main__":
     tools = {
-            "idba" : "https://github.com/loneknightpy/idba/releases/download/1.1.3/idba-1.1.3.tar.gz",
+            "idba": "https://github.com/loneknightpy/idba/releases/download/1.1.3/idba-1.1.3.tar.gz",
             "MetaSPAdes": "http://cab.spbu.ru/files/release3.10.1/SPAdes-3.10.1-Linux.tar.gz",
-            "megaHit": "https://github.com/voutcn/megahit/releases/download/v1.1.1/megahit_v1.1.1_LINUX_CPUONLY_x86_64-bin.tar.gz"
+            "megaHit": "https://github.com/voutcn/megahit/releases/download/v1.1.1/megahit_v1.1.1_LINUX_CPUONLY_x86_64-bin.tar.gz",
+            "checkM": "https://github.com/Ecogenomics/CheckM/archive/v1.0.7.tar.gz",
+            "hisat2": "ftp://ftp.ccb.jhu.edu/pub/infphilo/hisat2/downloads/hisat2-2.0.5-Linux_x86_64.zip"
             }
 
     wd, tools = setup(tools)
